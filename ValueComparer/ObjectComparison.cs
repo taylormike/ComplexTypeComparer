@@ -67,7 +67,7 @@ namespace ValueComparison
                     }
                     else if (propertyType.IsGenericType)
                     {
-                        //Ignored
+                        propCompareResult = ValueComparer.CompareProperty(pi, x, pi, y, true);
                     }
                     else
                     {

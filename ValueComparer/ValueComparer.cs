@@ -141,7 +141,7 @@ namespace ValueComparison
             }
             else if (xProp.PropertyType.IsEnumberable() && yProp.PropertyType.IsEnumberable())
             {
-                result.Result = ValueComparer.AreEnumerableEqual(xValue, yValue, caseSensitive);
+                result.Result = ValueComparer.AreEnumerableEqual(xValue, yValue, caseSensitive, false);
             }
             else if (xProp.PropertyType.IsGenericType && yProp.PropertyType.IsGenericType)
             {
@@ -157,7 +157,7 @@ namespace ValueComparison
 
         }
 
-        private static bool AreEnumerableEqual(object x, object y, bool caseSensitive)
+        private static bool AreEnumerableEqual(object x, object y, bool caseSensitive, bool countOnlyComparison)
         {
             if (Object.ReferenceEquals(x, y))
                 return true;
@@ -176,7 +176,20 @@ namespace ValueComparison
             if (source1.Count != source2.Count)
                 return false;
 
-            // Only compare based on number of items in sources
+
+            if (countOnlyComparison)
+            {
+                // Only compare based on number of items in sources
+                return true;
+            }
+
+            // using KeyValuePair<,> approach
+            foreach (var item in source1.Zip(source2))
+            {
+                if (!ValueComparer.AreEqual(item.Key, item.Value))
+                    return false;
+            }
+
             return true;
         }
 
